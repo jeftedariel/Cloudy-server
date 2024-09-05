@@ -4,7 +4,11 @@ import (
     "log"
     "net/http"
     "path/filepath"
+    "math/rand"
     "strings"
+    "strconv"
+    "time"
+    "fmt"
     "os"
     "io"
 )
@@ -33,9 +37,23 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
         return
     }
     defer file.Close()
+    
+    //creates a random number for the folder
+    rand.Seed(time.Now().UnixNano())
+    min := 10000000
+    max := 99999999
+    folderId := strconv.Itoa(rand.Intn(max-min+1)+min)
+    fmt.Println("A New File has been uploaded, saved at: ", folderId)
 
-    filePath := filepath.Join("storage", ,handler.Filename)
+    errFolder := os.Mkdir(filepath.Join("storage",folderId), 0755)
+    if err != nil {
+      fmt.Println(errFolder) 
+      return
+   }
+
+    filePath := filepath.Join("storage",folderId,handler.Filename)
     dst, err := os.Create(filePath)
+
     if err != nil {
         http.Error(w, "Error saving the file", http.StatusInternalServerError)
         log.Println("Error saving the file:", err)
