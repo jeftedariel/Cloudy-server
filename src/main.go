@@ -12,9 +12,15 @@ import (
     "os"
     "io"
     "errors"
+    "github.com/joho/godotenv"
 )
 
 func downloadFile(w http.ResponseWriter, r *http.Request) {
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Err when loading the .env")
+    }
+
     //This is to look to the file that will be downloaded
     filePath := r.URL.Path[len("/download/"):]// And the folder storage which is where we save all the stuff
     filePath = filepath.Join("storage", filePath)
@@ -28,6 +34,14 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func uploadFile(w http.ResponseWriter, r *http.Request) {
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Err when loading the .env")
+    }
+
+    publicIP := os.Getenv("IP")
+    port := os.Getenv("PORT")
+
     r.ParseMultipartForm(20000 << 20) // 20Gibityes of limit
 
     // gettin the file from the form data
@@ -78,16 +92,25 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
     }
 
     // Respond with a success message
-    w.Write([]byte("The File has been uploaded successfully"))
+    downloadURL := "http://" + publicIP + ":" + port + "/download/" + folderId + "/" + handler.Filename
+    w.Write([]byte("The File has been uploaded successfully \n"))
+    w.Write([]byte(downloadURL))
 }
 
 
 
 func main() {
+    err := godotenv.Load()
+    if err != nil {
+        log.Fatal("Err when loading the .env")
+    }
+
+    port := ":"+os.Getenv("PORT")
+
     http.HandleFunc("/download/", downloadFile)
     http.HandleFunc("/upload", uploadFile)
-    log.Println("Starting server on :8080")
-    if err := http.ListenAndServe(":8080", nil); err != nil {
+    log.Println("Starting server on", os.Getenv("PORT"))
+    if err := http.ListenAndServe(port, nil); err != nil {
         log.Fatal("Error starting server:", err)
     }
 }
