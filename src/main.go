@@ -11,6 +11,7 @@ import (
     "fmt"
     "os"
     "io"
+    "errors"
 )
 
 func downloadFile(w http.ResponseWriter, r *http.Request) {
@@ -38,12 +39,19 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
     }
     defer file.Close()
     
+    if _, err := os.Stat("./storage/"); errors.Is(err, os.ErrNotExist) {
+      os.Mkdir(filepath.Join("storage"), 0755)
+    }
+
+
+
     //creates a random number for the folder
     rand.Seed(time.Now().UnixNano())
     min := 10000000
     max := 99999999
     folderId := strconv.Itoa(rand.Intn(max-min+1)+min)
     fmt.Println("A New File has been uploaded, saved at: ", folderId)
+  
 
     errFolder := os.Mkdir(filepath.Join("storage",folderId), 0755)
     if err != nil {
