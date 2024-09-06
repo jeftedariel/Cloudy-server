@@ -40,7 +40,6 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
     }
 
     publicIP := os.Getenv("IP")
-    port := os.Getenv("PORT")
 
     r.ParseMultipartForm(20000 << 20) // 20Gibityes of limit
 
