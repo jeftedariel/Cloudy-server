@@ -29,6 +29,13 @@ func downloadFile(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid file path", http.StatusBadRequest)
         return
     }
+
+    fileInfo, err := os.Stat(filePath)
+    if errors.Is(err, os.ErrNotExist) || fileInfo.IsDir() {
+        http.Error(w, "File not found", http.StatusNotFound)
+        return
+    }
+
     //then if we can find it, we send it back
     http.ServeFile(w, r, filePath)
 }
