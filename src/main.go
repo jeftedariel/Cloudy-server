@@ -92,7 +92,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
     }
 
     // Respond with a success message
-    downloadURL := "http://" + publicIP + ":" + port + "/download/" + folderId + "/" + handler.Filename
+    downloadURL := "https://" + publicIP + "/download/" + folderId + "/" + handler.Filename
     w.Write([]byte("The File has been uploaded successfully \n"))
     w.Write([]byte(downloadURL))
 }
