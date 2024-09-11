@@ -16,7 +16,7 @@ import (
 )
 
 func getTimePromt() string {
-	return "[" + time.Now().Format("01-02-2006 15:04:05") + "] -> "
+	return "[" + "\033[36m" + time.Now().Format("01-02-2006 15:04:05") + "\033[0m" + "] -> "
 }
 
 func downloadFile(w http.ResponseWriter, r *http.Request) {
