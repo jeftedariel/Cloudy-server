@@ -72,11 +72,13 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	min := 10000000
 	max := 99999999
 	folderId := strconv.Itoa(rand.Intn(max-min+1) + min)
-	fmt.Println("A New File has been uploaded, saved at: ", folderId)
+	fmt.Println(getTimePromt()+"A New File has been uploaded, saved at: ", folderId)
 
 	errFolder := os.Mkdir(filepath.Join("storage", folderId), 0755)
 	if err != nil {
-		fmt.Println(errFolder)
+		fmt.Print(getTimePromt())
+		fmt.Print(errFolder)
+		fmt.Println()
 		return
 	}
 
